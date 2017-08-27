@@ -1,0 +1,20 @@
+[
+{
+  "modid": "proxy",
+  "name": "Proxy",
+  "description": "",
+  "version": "@PROXY_VER@",
+  "url": "http://bdew.net/",
+  "updateUrl": "",
+  "authorList": [
+    "bdew"
+  ],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [
+  ],
+  "parent":"",
+  "dependencies": [
+  ]
+}
+]
