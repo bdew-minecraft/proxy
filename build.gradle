@@ -53,6 +53,7 @@ minecraft {
     mappings = "${config.minecraft.mappings}"
     useDepAts = true
     makeObfSourceJar = false
+    runDir = "run"
     replace("BDLIB_VER", config.bdlib.version)
     replace("PROXY_VER", simpleVersion.toString())
 }

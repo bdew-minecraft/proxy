@@ -18,6 +18,7 @@
 package net.bdew.proxy
 
 import net.bdew.proxy.config.Blocks
+import net.minecraftforge.common.ForgeChunkManager
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
 import net.minecraftforge.fml.common.event._
@@ -45,6 +46,7 @@ object Proxy {
 
   @EventHandler
   def init(event: FMLInitializationEvent) {
+    ForgeChunkManager.setForcedChunkLoadingCallback(this, ChunkLoadingCallback)
     FMLInterModComms.sendMessage("waila", "register", "net.bdew.proxy.waila.WailaHandler.loadCallback")
   }
 }

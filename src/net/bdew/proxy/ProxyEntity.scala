@@ -20,18 +20,77 @@ package net.bdew.proxy
 import net.bdew.lib.block.TileKeepData
 import net.bdew.lib.data.DataSlotOption
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.common.DimensionManager
+import net.minecraft.util.math.ChunkPos
+import net.minecraft.world.World
+import net.minecraftforge.common.ForgeChunkManager.Ticket
 import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.common.{DimensionManager, ForgeChunkManager}
 
 class ProxyEntity extends TileDataSlots with TileKeepData {
   val targetPosition = DataSlotOption[DimensionalPos]("targetPos", this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
+  var ticket: Ticket = _
+
+  def getWorldFromId(id: Int, force: Boolean): Option[World] = {
+    require(!(world.isRemote & force), "Force can't be used in client context")
+    if (id == world.provider.getDimension) return Some(world)
+    if (force) {
+      val w = Option(world.getMinecraftServer.getWorld(id))
+      if (w.isEmpty)
+        Proxy.logWarn(s"Force load of dimension $id failed")
+      w
+    } else Option(DimensionManager.getWorld(id))
+  }
+
+  def startChunkLoading(): Unit = {
+    if (ticket != null) stopChunkLoading()
+    for {
+      DimensionalPos(pos, dimId) <- targetPosition.value
+      targetWorld <- getWorldFromId(dimId, true)
+    } {
+      ticket = ForgeChunkManager.requestTicket(Proxy, targetWorld, ForgeChunkManager.Type.NORMAL)
+      Proxy.logInfo(s"Got ticket for ${this.pos} to load ${targetPosition.value}")
+      if (ticket != null)
+        ForgeChunkManager.forceChunk(ticket, new ChunkPos(pos.getX >> 4, pos.getZ >> 4))
+    }
+  }
+
+  def stopChunkLoading(): Unit = {
+    Proxy.logInfo("Releasing ticket")
+    ForgeChunkManager.releaseTicket(ticket)
+    ticket = null
+  }
+
+  override def doLoad(kind: UpdateKind.Value, t: NBTTagCompound): Unit = {
+    super.doLoad(kind, t)
+    if (kind == UpdateKind.SAVE && !world.isRemote) {
+      Proxy.logInfo(s"Load $pos")
+      startChunkLoading()
+    }
+  }
+
+  override def onChunkUnload(): Unit = {
+    Proxy.logInfo(s"Unload $pos")
+    if (ticket != null) stopChunkLoading()
+  }
+
+  override def invalidate(): Unit = {
+    Proxy.logInfo(s"Invalidate $pos")
+    if (ticket != null) stopChunkLoading()
+    super.invalidate()
+  }
+
+
+  override def setWorldCreate(world: World) = {
+    this.world = world
+  }
 
   def getTarget: Option[TileEntity] = {
     for {
       DimensionalPos(pos, dimId) <- targetPosition.value
-      dim <- Option(DimensionManager.getWorld(dimId)) if dim.isBlockLoaded(pos)
+      dim <- getWorldFromId(dimId, false)
       tile <- Option(dim.getTileEntity(pos))
     } yield tile
   }
