@@ -39,9 +39,12 @@ object ProxyItem extends ItemBlockKeepData(ProxyBlock) {
   }
 
   override def onItemUse(player: EntityPlayer, worldIn: World, pos: BlockPos, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float) = {
-    if (!player.isSneaking)
-      super.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ)
-    else {
+    if (!player.isSneaking) {
+      if (getTargetPos(player.getHeldItem(hand)).isEmpty)
+        EnumActionResult.FAIL
+      else
+        super.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ)
+    } else {
       setTargetPos(player.getHeldItem(hand), DimensionalPos(pos, player.dimension))
       import net.bdew.lib.helpers.ChatHelper._
       player.sendStatusMessage(L("proxy.bound", "%d, %d, %d".format(pos.getX, pos.getY, pos.getZ), player.dimension.toString), true)
