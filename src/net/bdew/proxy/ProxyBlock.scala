@@ -20,12 +20,14 @@ package net.bdew.proxy
 import com.mojang.realmsclient.gui.ChatFormatting
 import net.bdew.lib.Misc
 import net.bdew.lib.block._
-import net.minecraft.block.material.Material
+import net.minecraft.block.material.{MapColor, Material}
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.item.ItemStack
 import net.minecraft.world.World
 
-object ProxyBlock extends BaseBlock("proxy", Material.ROCK) with HasTE[ProxyEntity] with BlockKeepData with HasItemBlock with BlockTooltip {
+object ProxyMaterial extends Material(MapColor.OBSIDIAN)
+
+object ProxyBlock extends BaseBlock("proxy", ProxyMaterial) with HasTE[ProxyEntity] with BlockKeepData with HasItemBlock with BlockTooltip {
   setHardness(0.5f)
 
   override val TEClass = classOf[ProxyEntity]
