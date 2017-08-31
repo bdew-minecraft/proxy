@@ -33,22 +33,19 @@ class ProxyEntity extends TileDataSlots with TileKeepData {
       DimensionalPos(pos, dimId) <- targetPosition.value
       dim <- Option(DimensionManager.getWorld(dimId)) if dim.isBlockLoaded(pos)
       tile <- Option(dim.getTileEntity(pos))
-    } yield {
-      if (pos == this.pos) {
-        // Prevent infinite recursion
-        if (!world.isRemote)
-          world.createExplosion(null, pos.getX + 0.5, pos.getY + 0.5, pos.getZ + 0.5, 5, true)
-        return None
-      }
-      tile
-    }
+    } yield tile
   }
 
   override def hasCapability(capability: Capability[_], facing: EnumFacing) =
-    getTarget exists (_.hasCapability(capability, facing))
+    RecursionGuard.withGuard(world, pos, false) {
+      getTarget exists (_.hasCapability(capability, facing))
+    }
+
   override def getCapability[T](capability: Capability[T], facing: EnumFacing) =
-    getTarget match {
-      case Some(te) => te.getCapability(capability, facing)
-      case None => null.asInstanceOf[T]
+    RecursionGuard.withGuard(world, pos, null.asInstanceOf[T]) {
+      getTarget match {
+        case Some(te) => te.getCapability(capability, facing)
+        case None => null.asInstanceOf[T]
+      }
     }
 }
