@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler
 import net.minecraftforge.fml.common.event._
 import org.apache.logging.log4j.Logger
 
-@Mod(modid = Proxy.modId, version = "PROXY_VER", name = "Proxy", dependencies = "required-after:bdlib", modLanguage = "scala")
+@Mod(modid = Proxy.modId, version = "PROXY_VER", name = "Proxy", dependencies = "required-after:bdlib", modLanguage = "scala", acceptedMinecraftVersions = "[1.12,1.12.2]")
 object Proxy {
   var log: Logger = null
   var instance = this
