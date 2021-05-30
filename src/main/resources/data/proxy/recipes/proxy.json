@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "proxy",
   "pattern": [
     "DXD",
     "XOX",
@@ -8,16 +7,17 @@
   ],
   "key": {
     "D": {
-      "item": "minecraft:diamond"
+      "tag": "forge:gems/diamond"
     },
     "X": {
       "item": "minecraft:ender_eye"
     },
     "O": {
-      "item": "minecraft:obsidian"
+      "tag": "forge:obsidian"
     }
   },
   "result": {
-    "item": "proxy:proxy"
+    "item": "proxy:proxy",
+    "count": 1
   }
 }
