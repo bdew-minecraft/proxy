@@ -1,5 +1,6 @@
 package net.bdew.proxy
 
+import net.bdew.lib.block.BlockPosDim
 import net.bdew.lib.data.DataSlotOption
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 import net.bdew.lib.keepdata.TileKeepData
@@ -10,15 +11,15 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.util.LazyOptional
 
 class ProxyEntity(teType: TileEntityType[_]) extends TileExtended(teType) with TileDataSlots with TileKeepData {
-  val targetPosition: DataSlotOption[DimensionalPos] = DataSlotOption[DimensionalPos]("targetPos", this)
+  val targetPosition: DataSlotOption[BlockPosDim] = DataSlotOption[BlockPosDim]("targetPos", this)
     .setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
   def getTarget: Option[TileEntity] = {
     if (level.isClientSide) return None
     for {
-      DimensionalPos(targetPos, targetDim) <- targetPosition.value
-      targetWorld <- Option(getLevel.getServer.getLevel(targetDim)) if targetWorld.isLoaded(targetPos)
-      tile <- Option(targetWorld.getBlockEntity(targetPos))
+      target <- targetPosition.value
+      targetWorld <- target.world(level.getServer) if targetWorld.isLoaded(target.pos)
+      tile <- Option(targetWorld.getBlockEntity(target.pos))
     } yield tile
   }
 
