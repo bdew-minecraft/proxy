@@ -1,8 +1,8 @@
 package net.bdew.proxy.registries
 
 import net.bdew.lib.managers.ItemManager
-import net.minecraft.item.ItemGroup
+import net.minecraft.world.item.CreativeModeTab
 
-object Items extends ItemManager(ItemGroup.TAB_MISC) {
+object Items extends ItemManager(CreativeModeTab.TAB_MISC) {
 
 }

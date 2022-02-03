@@ -8,11 +8,12 @@ import net.bdew.lib.items.TooltipBlockItem
 import net.bdew.lib.keepdata.BlockItemKeepData
 import net.bdew.lib.nbt.NBT
 import net.bdew.proxy.registries.Items
-import net.minecraft.client.util.ITooltipFlag
-import net.minecraft.item.{ItemStack, ItemUseContext}
-import net.minecraft.util.text.ITextComponent
-import net.minecraft.util.{ActionResultType, Util}
-import net.minecraft.world.World
+import net.minecraft.Util
+import net.minecraft.network.chat.Component
+import net.minecraft.world.InteractionResult
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
+import net.minecraft.world.item.context.UseOnContext
+import net.minecraft.world.level.Level
 
 class ProxyItem(block: ProxyBlock) extends BlockItemKeepData(block, Items.props) with TooltipBlockItem {
   def getTargetPos(stack: ItemStack): Option[BlockPosDim] = {
@@ -26,9 +27,9 @@ class ProxyItem(block: ProxyBlock) extends BlockItemKeepData(block, Items.props)
     stack.setTag(NBT("data" -> NBT("targetPos" -> pos)))
   }
 
-  override def useOn(ctx: ItemUseContext): ActionResultType = {
+  override def useOn(ctx: UseOnContext): InteractionResult = {
     if (ctx.getPlayer.isCrouching) {
-      if (ctx.getLevel.isClientSide) return ActionResultType.SUCCESS
+      if (ctx.getLevel.isClientSide) return InteractionResult.SUCCESS
       setTargetPos(ctx.getItemInHand, BlockPosDim(ctx.getClickedPos, ctx.getLevel.dimension()))
       ctx.getPlayer.sendMessage(
         Text.translate("proxy.bound",
@@ -36,16 +37,16 @@ class ProxyItem(block: ProxyBlock) extends BlockItemKeepData(block, Items.props)
           ctx.getLevel.dimension.location.toString
         ), Util.NIL_UUID
       )
-      ActionResultType.CONSUME
+      InteractionResult.CONSUME
     } else {
       if (getTargetPos(ctx.getItemInHand).isEmpty)
-        ActionResultType.FAIL
+        InteractionResult.FAIL
       else
         super.useOn(ctx)
     }
   }
 
-  override def getTooltip(stack: ItemStack, world: World, flags: ITooltipFlag): List[ITextComponent] = {
+  override def getTooltip(stack: ItemStack, world: Level, flags: TooltipFlag): List[Component] = {
     super.getTooltip(stack, world, flags) :+
       (getTargetPos(stack) match {
         case Some(BlockPosDim(pos, dim)) => Text.translate("proxy.bound", "%d, %d, %d".format(pos.getX, pos.getY, pos.getZ), dim.location.toString)
