@@ -3,7 +3,6 @@ package net.bdew.proxy
 
 import net.bdew.lib.Text
 import net.bdew.lib.Text.pimpTextComponent
-import net.minecraft.Util
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.{Explosion, Level}
 
@@ -18,7 +17,7 @@ object RecursionGuard {
       if (!world.isClientSide) {
         val toBlow = recursionSet.value
         for (player <- world.players().asScala if toBlow.exists(block => player.distanceToSqr(block.getX, block.getY, block.getZ) <= 25D))
-          player.sendMessage(Text.translate("proxy.loop").setColor(Text.Color.RED), Util.NIL_UUID)
+          player.sendSystemMessage(Text.translate("proxy.loop").setColor(Text.Color.RED))
         for (p <- toBlow)
           world.explode(null, p.getX + 0.5, p.getY + 0.5, p.getZ + 0.5, 5, Explosion.BlockInteraction.BREAK)
       }

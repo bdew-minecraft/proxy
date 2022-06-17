@@ -8,11 +8,10 @@ import net.bdew.lib.items.TooltipBlockItem
 import net.bdew.lib.keepdata.BlockItemKeepData
 import net.bdew.lib.nbt.NBT
 import net.bdew.proxy.registries.Items
-import net.minecraft.Util
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.item.{ItemStack, TooltipFlag}
 import net.minecraft.world.item.context.UseOnContext
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
 import net.minecraft.world.level.Level
 
 class ProxyItem(block: ProxyBlock) extends BlockItemKeepData(block, Items.props) with TooltipBlockItem {
@@ -31,11 +30,11 @@ class ProxyItem(block: ProxyBlock) extends BlockItemKeepData(block, Items.props)
     if (ctx.getPlayer.isCrouching) {
       if (ctx.getLevel.isClientSide) return InteractionResult.SUCCESS
       setTargetPos(ctx.getItemInHand, BlockPosDim(ctx.getClickedPos, ctx.getLevel.dimension()))
-      ctx.getPlayer.sendMessage(
+      ctx.getPlayer.sendSystemMessage(
         Text.translate("proxy.bound",
           "%d, %d, %d".format(ctx.getClickedPos.getX, ctx.getClickedPos.getY, ctx.getClickedPos.getZ),
           ctx.getLevel.dimension.location.toString
-        ), Util.NIL_UUID
+        )
       )
       InteractionResult.CONSUME
     } else {
