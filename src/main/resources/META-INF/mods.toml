@@ -17,7 +17,7 @@ After crafting a proxy block you can shift+right click it on any block or machin
 [[dependencies.compacter]]
 modId = "forge"
 mandatory = true
-versionRange = "[41.0.64,)"
+versionRange = "[41.0.98,)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -31,7 +31,7 @@ side = "BOTH"
 [[dependencies.compacter]]
 modId = "bdlib"
 mandatory = true
-versionRange = "[1.21.0,)"
+versionRange = "[1.22.0,)"
 ordering = "NONE"
 side = "BOTH"
 
