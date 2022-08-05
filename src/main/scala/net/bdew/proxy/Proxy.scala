@@ -5,11 +5,6 @@ import net.minecraftforge.fml.common.Mod
 import org.apache.logging.log4j.{LogManager, Logger}
 
 @Mod(Proxy.ModId)
-class Proxy {
-  Items.init()
-  Blocks.init()
-}
-
 object Proxy {
   final val ModId = "proxy"
 
@@ -21,4 +16,7 @@ object Proxy {
   def logError(msg: String, args: Any*): Unit = log.error(msg.format(args: _*))
   def logWarnException(msg: String, t: Throwable, args: Any*): Unit = log.warn(msg.format(args: _*), t)
   def logErrorException(msg: String, t: Throwable, args: Any*): Unit = log.error(msg.format(args: _*), t)
+
+  Items.init()
+  Blocks.init()
 }
