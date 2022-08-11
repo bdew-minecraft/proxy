@@ -17,21 +17,21 @@ After crafting a proxy block you can shift+right click it on any block or machin
 [[dependencies.compacter]]
 modId = "forge"
 mandatory = true
-versionRange = "[42.0,)"
+versionRange = "[43.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.compacter]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.1,)"
+versionRange = "[1.19.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.compacter]]
 modId = "bdlib"
 mandatory = true
-versionRange = "[1.23.0,)"
+versionRange = "[1.24.0,)"
 ordering = "NONE"
 side = "BOTH"
 
