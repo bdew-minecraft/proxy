@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "proxy:blocks/proxy"
+    "all": "proxy:block/proxy"
   }
 }
