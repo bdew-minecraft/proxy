@@ -4,7 +4,7 @@ package net.bdew.proxy
 import net.bdew.lib.Text
 import net.bdew.lib.Text.pimpTextComponent
 import net.minecraft.core.BlockPos
-import net.minecraft.world.level.{Explosion, Level}
+import net.minecraft.world.level.Level
 
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 import scala.util.DynamicVariable
@@ -19,7 +19,7 @@ object RecursionGuard {
         for (player <- world.players().asScala if toBlow.exists(block => player.distanceToSqr(block.getX, block.getY, block.getZ) <= 25D))
           player.sendSystemMessage(Text.translate("proxy.loop").setColor(Text.Color.RED))
         for (p <- toBlow)
-          world.explode(null, p.getX + 0.5, p.getY + 0.5, p.getZ + 0.5, 5, Explosion.BlockInteraction.BREAK)
+          world.explode(null, p.getX + 0.5, p.getY + 0.5, p.getZ + 0.5, 5, false, Level.ExplosionInteraction.BLOCK)
       }
       invalidResult
     } else recursionSet.withValue(recursionSet.value + pos)(f)
